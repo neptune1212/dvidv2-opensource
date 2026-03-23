@@ -1,5 +1,9 @@
 # THCON 2026 - DVID/WOCSA Bluetooth Workshop
 
+<p align="center">
+  <img src="https://avatars.githubusercontent.com/wocsa" alt="WOCSA Logo" />
+</p>
+
 This workshop takes place at ENSEIHT in Toulouse for THCon 2026.
 
 Many thanks to the WOCSA team for leading this workshop.

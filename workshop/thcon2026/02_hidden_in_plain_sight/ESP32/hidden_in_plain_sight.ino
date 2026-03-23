@@ -9,9 +9,21 @@
  * Flag: WOCSA{adv_data_leaks_secrets}
  */
 
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEAdvertising.h>
+
+#define SCREEN_WIDTH   128
+#define SCREEN_HEIGHT  64
+#define OLED_RESET     -1
+#define SCREEN_ADDRESS 0x3C
+#define I2C_SDA        15
+#define I2C_SCL        4
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define DEVICE_NAME "THCON26_BLE_02"
 
@@ -30,6 +42,22 @@ static const uint8_t flagData[] = {
 void setup() {
   Serial.begin(115200);
   Serial.println("[*] Challenge 02 - Hidden in Plain Sight");
+
+  Wire.begin(I2C_SDA, I2C_SCL);
+  if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+    Serial.println(F("SSD1306 allocation failed"));
+  } else {
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+    display.println(F("THCON 2026"));
+    display.println(F("Challenge 02"));
+    display.println();
+    display.println(F("Hidden in Plain"));
+    display.println(F("Sight"));
+    display.display();
+  }
 
   BLEDevice::init(DEVICE_NAME);
 

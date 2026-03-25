@@ -28,18 +28,19 @@ This challenge teaches the fundamental architecture of Bluetooth Low Energy: **S
 
 ### Scan for the device
 ```bash
-bluetoothctl scan on
+bluetoothctl
+[bluetooth]# scan on
 ```
 
 ### Connect and list services
 ```bash
-gatttool -b <MAC_ADDRESS> -I
-> connect
-> primary
-> characteristics
+gatttool -b AA:BB:CC:DD:EE:FF -I
+[AA:BB:CC:DD:EE:FF][LE]> connect
+[AA:BB:CC:DD:EE:FF][LE]> primary
+[AA:BB:CC:DD:EE:FF][LE]> characteristics
 ```
 
 ### Read a characteristic
 ```bash
-> char-read-hnd <handle>
+[AA:BB:CC:DD:EE:FF][LE]> char-read-hnd <handle>
 ```

@@ -35,5 +35,7 @@ btatt.opcode == 0x12
 
 ### Replay with gatttool
 ```bash
-gatttool -b AA:BB:CC:DD:EE:FF --char-write-req --handle=<HANDLE> --value=<HEX_PAYLOAD>
+gatttool -b AA:BB:CC:DD:EE:FF -I
+[AA:BB:CC:DD:EE:FF][LE]> connect
+[AA:BB:CC:DD:EE:FF][LE]> char-write-req <HANDLE> <HEX_PAYLOAD>
 ```

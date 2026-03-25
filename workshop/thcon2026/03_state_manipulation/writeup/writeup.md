@@ -6,13 +6,33 @@
 
 ---
 
-## 🔍 Step 1: Connect and Enumerate
+## 🔍 Step 1: Scan for the BLE Device
 
-Scan for `THCON26_BLE_03` and connect:
+### Option A — Linux CLI
 
 ```bash
-bluetoothctl scan on
-# Note: MAC = AA:BB:CC:DD:EE:FF
+bluetoothctl
+[bluetooth]# scan on
+```
+
+Expected output:
+```
+[NEW] Device AA:BB:CC:DD:EE:FF THCON26_BLE_03
+```
+
+Note the MAC address (e.g., `AA:BB:CC:DD:EE:FF`).
+
+### Option B — nRF Connect (mobile)
+
+Open the app, tap **SCAN**. You will see `THCON26_BLE_03` appear in the list.
+
+---
+
+## 🔗 Step 2: Connect and Enumerate
+
+### Option A — Linux CLI (gatttool)
+
+```bash
 gatttool -b AA:BB:CC:DD:EE:FF -I
 [AA:BB:CC:DD:EE:FF][LE]> connect
 [AA:BB:CC:DD:EE:FF][LE]> characteristics
@@ -26,9 +46,15 @@ handle: 0x0004, char properties: 0x08, char value handle: 0x0005, uuid: abcdef03
 
 Properties: `0x02` = READ, `0x08` = WRITE.
 
+### Option B — nRF Connect (mobile)
+
+Tap **CONNECT** on `THCON26_BLE_03`. The app will display all services and their characteristics. You will see two characteristics — one with a **READ** property and one with a **WRITE** property.
+
 ---
 
-## 🔒 Step 2: Attempt to Read the Flag (Denied)
+## 🔒 Step 3: Attempt to Read the Flag (Denied)
+
+### Option A — Linux CLI (gatttool)
 
 ```bash
 [AA:BB:CC:DD:EE:FF][LE]> char-read-hnd 0x0003
@@ -44,13 +70,19 @@ Decode:
 Access Denied
 ```
 
+### Option B — nRF Connect (mobile)
+
+Tap the **↓ (read)** button on the READ characteristic. The value shown will be `Access Denied`.
+
 The flag characteristic is locked.
 
 ---
 
-## ✍️ Step 3: Write to the Unlock Characteristic
+## ✍️ Step 4: Write to the Unlock Characteristic
 
 Send `0x01` to the WRITE characteristic (handle `0x0005`):
+
+### Option A — Linux CLI (gatttool)
 
 ```bash
 [AA:BB:CC:DD:EE:FF][LE]> char-write-req 0x0005 01
@@ -61,9 +93,15 @@ Expected output:
 Characteristic value was written successfully
 ```
 
+### Option B — nRF Connect (mobile)
+
+Tap the **↑ (write)** button on the WRITE characteristic. Select **BYTE ARRAY**, enter `01`, and tap **WRITE**.
+
 ---
 
-## 📖 Step 4: Re-read the Flag Characteristic
+## 📖 Step 5: Re-read the Flag Characteristic
+
+### Option A — Linux CLI (gatttool)
 
 ```bash
 [AA:BB:CC:DD:EE:FF][LE]> char-read-hnd 0x0003
@@ -82,6 +120,10 @@ echo "574f43534...7d" | xxd -r -p
 ```
 WOCSA{write_to_unlock_the_secret}
 ```
+
+### Option B — nRF Connect (mobile)
+
+Tap the **↓ (read)** button on the READ characteristic again. The value will now display `WOCSA{write_to_unlock_the_secret}` in UTF-8.
 
 ---
 

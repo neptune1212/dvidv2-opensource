@@ -50,7 +50,9 @@ The handle maps to: `facade00-0002-1000-8000-00805f9b34fb` (AUTH characteristic)
 ### Option A — gatttool
 
 ```bash
-gatttool -b AA:BB:CC:DD:EE:FF --char-write-req --handle=0x000b --value=deadbeef
+gatttool -b AA:BB:CC:DD:EE:FF -I
+[AA:BB:CC:DD:EE:FF][LE]> connect
+[AA:BB:CC:DD:EE:FF][LE]> char-write-req 0x000b deadbeef
 ```
 
 ### Option B — Python (bleak)
@@ -81,8 +83,12 @@ asyncio.run(main())
 ## 📖 Step 5: Read the Flag
 
 ```bash
-gatttool -b AA:BB:CC:DD:EE:FF --char-read --handle=0x0009
-# Characteristic value: 57 4f 43 53 41 7b...
+[AA:BB:CC:DD:EE:FF][LE]> char-read-hnd 0x0009
+```
+
+Expected output:
+```
+Characteristic value/descriptor: 57 4f 43 53 41 7b...
 ```
 
 Or the Python script above will print it directly.

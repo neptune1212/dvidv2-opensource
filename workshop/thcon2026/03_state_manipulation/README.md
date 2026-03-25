@@ -27,12 +27,18 @@ GATT servers can implement logic where writing to one characteristic **triggers 
 
 ## Useful Commands
 
+### Connect to the device
+```bash
+gatttool -b <MAC> -I
+[<MAC>][LE]> connect
+```
+
 ### Write a value to a characteristic
 ```bash
-gatttool -b <MAC> --char-write-req --handle=<HANDLE> --value=01
+[<MAC>][LE]> char-write-req <HANDLE> 01
 ```
 
 ### Read a characteristic
 ```bash
-gatttool -b <MAC> --char-read --handle=<HANDLE>
+[<MAC>][LE]> char-read-hnd <HANDLE>
 ```

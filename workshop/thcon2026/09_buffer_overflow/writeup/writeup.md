@@ -9,9 +9,18 @@
 ## 🔍 Step 1: Connect and Enumerate
 
 ```bash
-bluetoothctl scan on
-# MAC: AA:BB:CC:DD:EE:FF
+bluetoothctl
+[bluetooth]# scan on
+```
 
+Expected output:
+```
+[NEW] Device AA:BB:CC:DD:EE:FF THCON26_BLE_09
+```
+
+Note the MAC address (e.g., `AA:BB:CC:DD:EE:FF`).
+
+```bash
 gatttool -b AA:BB:CC:DD:EE:FF -I
 [AA:BB:CC:DD:EE:FF][LE]> connect
 [AA:BB:CC:DD:EE:FF][LE]> characteristics

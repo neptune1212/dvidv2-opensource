@@ -9,7 +9,8 @@
 ## 🔍 Step 1: Scan for the Device and Read the Hint
 
 ```bash
-bluetoothctl scan on
+bluetoothctl
+[bluetooth]# scan on
 ```
 
 You will see two entries for the device (advertisement + scan response):
@@ -25,7 +26,9 @@ The scan response contains `Trusted:DE:AD:BE:EF:CA:FE`, revealing the trusted MA
 ## 🔗 Step 2: Attempt Connection with Your Real MAC (Fails)
 
 ```bash
-gatttool -b AA:BB:CC:DD:EE:FF --char-read --uuid cafebabe-0001-1000-8000-00805f9b34fb
+gatttool -b AA:BB:CC:DD:EE:FF -I
+[AA:BB:CC:DD:EE:FF][LE]> connect
+[AA:BB:CC:DD:EE:FF][LE]> char-read-uuid cafebabe-0001-1000-8000-00805f9b34fb
 ```
 
 Result:

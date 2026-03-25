@@ -22,24 +22,17 @@ BLE devices broadcast **advertisement packets** before any connection is establi
 ## Tools
 
 * **nRF Connect** (mobile app) — inspect raw advertisement data
-* **hcitool lescan** + **hcidump** (Linux CLI)
-* **btlejuice** / **bettercap** — advanced passive sniffing
+* **bluetoothctl** (Linux CLI)
 
 ## Useful Commands
 
-### Passive scan with hcitool
+### Scan for the device
 ```bash
-sudo hcitool lescan --passive
+bluetoothctl
+[bluetooth]# scan on
 ```
 
-### Dump raw advertisement packets
+### Inspect advertisement data
 ```bash
-sudo hcidump -X | grep -A 20 "THCON26_BLE_02"
-```
-
-### Alternative: bettercap
-```bash
-sudo bettercap
-> ble.recon on
-> ble.show
+[bluetooth]# info AA:BB:CC:DD:EE:FF
 ```

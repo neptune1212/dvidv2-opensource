@@ -2,56 +2,74 @@
 
 **Difficulty:** ⭐ Beginner
 **Category:** Bluetooth Low Energy
-**Flag:** `WOCSA{adv_data_leaks_secrets}`
+**Flag:** `WOCSA{ble_adv_leaks_data}`
 
 ---
 
-## 🔍 Step 1: Passive Scan for BLE Advertisements
+## 🔍 Step 1: Scan for the BLE Device
 
-We need to observe raw advertisement packets without connecting to the device.
+Observe raw advertisement packets without connecting to the device.
 
-### Option A — nRF Connect (mobile)
-
-1. Tap **SCAN**
-2. Find `THCON26_BLE_02` in the list
-3. Tap on the device name to expand details
-4. Look for **Manufacturer Specific Data** in the raw advertisement section
-
-You will see hex bytes starting with `FF FF` (company ID), followed by the flag in ASCII.
-
-### Option B — Linux CLI
+### Option A — Linux CLI
 
 ```bash
-sudo hcitool lescan --passive &
-sudo hcidump -X 2>/dev/null
+bluetoothctl
+[bluetooth]# scan on
 ```
 
-Look for advertising events from `THCON26_BLE_02`. You will see the raw HCI data including a type `0xFF` field (Manufacturer Specific).
+Expected output:
+```
+[NEW] Device AA:BB:CC:DD:EE:FF THCON26_BLE_02
+```
+
+Note the MAC address (e.g., `AA:BB:CC:DD:EE:FF`).
+
+### Option B — nRF Connect (mobile)
+
+Open the app, tap **SCAN**. Find `THCON26_BLE_02` in the list and tap on it to expand the advertisement details. Look for **Manufacturer Specific Data** — you will see hex bytes starting with `FF FF` (company ID), followed by the flag in ASCII.
 
 ---
 
-## 📦 Step 2: Decode the Manufacturer Specific Data
+## 🔍 Step 2: Inspect the Advertisement Data
 
-The raw bytes visible in the advertisement (after the `FF FF` company ID):
+```bash
+[bluetooth]# info AA:BB:CC:DD:EE:FF
+```
+
+Expected output:
+```
+ManufacturerData.Key: 0xffff (65535)
+ManufacturerData.Value:
+  57 4f 43 53 41 7b 62 6c 65 5f 61 64 76 5f 6c 65  WOCSA{ble_adv_le
+  61 6b 73 5f 64 61 74 61 7d                       aks_data}
+```
+
+The flag is visible inline in ASCII on the right — no connection needed.
+
+---
+
+## 📦 Step 3: Decode the Manufacturer Specific Data
+
+If you prefer to decode manually, the raw bytes after the `FF FF` company ID are:
 
 ```
-57 4F 43 53 41 7B 61 64 76 5F 64 61 74 61 5F 6C 65 61 6B 73 5F 73 65 63 72 65 74 73 7D
+57 4F 43 53 41 7B 62 6C 65 5F 61 64 76 5F 6C 65 61 6B 73 5F 64 61 74 61 7D
 ```
 
 Decode:
 ```bash
-echo "574f435341 7b6164765f646174615f6c65616b735f73656372657473 7d" | xxd -r -p
+echo "574f4353417b626c655f6164765f6c65616b735f646174617d" | xxd -r -p
 ```
 
 Or using Python:
 ```python
-data = bytes.fromhex("574f43534137b6164765f646174615f6c65616b735f736563726574737d")
+data = bytes.fromhex("574f4353417b626c655f6164765f6c65616b735f646174617d")
 print(data.decode())
 ```
 
 Output:
 ```
-WOCSA{adv_data_leaks_secrets}
+WOCSA{ble_adv_leaks_data}
 ```
 
 ---
@@ -59,7 +77,7 @@ WOCSA{adv_data_leaks_secrets}
 ## 🎯 Flag
 
 ```
-WOCSA{adv_data_leaks_secrets}
+WOCSA{ble_adv_leaks_data}
 ```
 
 ---

@@ -6,7 +6,7 @@
  * in the Manufacturer Specific Data field (company ID 0xFFFF).
  * No GATT server is running — participants must inspect raw adv packets.
  *
- * Flag: WOCSA{adv_data_leaks_secrets}
+ * Flag: WOCSA{ble_adv_leaks_data}
  */
 
 #include <Wire.h>
@@ -90,15 +90,15 @@ void showLogo() {
 #define DEVICE_NAME "THCON26_BLE_02"
 
 // Flag bytes to embed in Manufacturer Specific Data
-// "WOCSA{adv_data_leaks_secrets}" as ASCII
+// "WOCSA{ble_adv_leaks_data}" as ASCII
 static const uint8_t flagData[] = {
   0xFF, 0xFF,  // Company ID (0xFFFF = test/unregistered)
-  // WOCSA{adv_data_leaks_secrets}
+  // WOCSA{ble_adv_leaks_data}
   0x57, 0x4F, 0x43, 0x53, 0x41, 0x7B,  // WOCSA{
-  0x61, 0x64, 0x76, 0x5F, 0x64, 0x61,  // adv_da
-  0x74, 0x61, 0x5F, 0x6C, 0x65, 0x61,  // ta_lea
-  0x6B, 0x73, 0x5F, 0x73, 0x65, 0x63,  // ks_sec
-  0x72, 0x65, 0x74, 0x73, 0x7D         // rets}
+  0x62, 0x6C, 0x65, 0x5F, 0x61, 0x64,  // ble_ad
+  0x76, 0x5F, 0x6C, 0x65, 0x61, 0x6B,  // v_leak
+  0x73, 0x5F, 0x64, 0x61, 0x74, 0x61,  // s_data
+  0x7D                                   // }
 };
 
 void showChallengeName() {
@@ -132,15 +132,19 @@ void setup() {
   BLEAdvertising* pAdvertising = BLEDevice::getAdvertising();
 
   // Build custom advertisement data
+  // Main advertisement: only Manufacturer Specific Data (type 0xFF)
+  // Name in adv + mfg data would exceed 31-byte BLE adv payload limit
   BLEAdvertisementData advData;
-  advData.setName(DEVICE_NAME);
-
-  // Add Manufacturer Specific Data (type 0xFF)
   String mfgData((char*)flagData, sizeof(flagData));
   advData.setManufacturerData(mfgData);
 
+  // Device name goes in scan response (separate 31-byte packet)
+  BLEAdvertisementData scanResponse;
+  scanResponse.setName(DEVICE_NAME);
+
   pAdvertising->setAdvertisementData(advData);
-  pAdvertising->setScanResponse(false);
+  pAdvertising->setScanResponseData(scanResponse);
+  pAdvertising->setScanResponse(true);
   pAdvertising->start();
 
   Serial.println("[*] BLE advertising started");

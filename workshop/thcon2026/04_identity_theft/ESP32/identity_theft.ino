@@ -178,9 +178,16 @@ void setup() {
 
   pService->start();
 
-  // Main advertisement: device name
+  // Main advertisement: explicit device name
+  // Note: service UUID is intentionally excluded from ADV_IND — the 128-bit UUID
+  // consumes 18 bytes, leaving no room for the 16-byte device name in the 31-byte
+  // ADV_IND payload. Without an explicit name here, BlueZ only sees the scan
+  // response name and displays "Trusted:DE:AD:BE:EF:CA:FE" as the device name.
   BLEAdvertising* pAdvertising = BLEDevice::getAdvertising();
-  pAdvertising->addServiceUUID(SERVICE_UUID);
+  BLEAdvertisementData advData;
+  advData.setFlags(0x06);  // LE General Discoverable | BR/EDR Not Supported (required for discoverability)
+  advData.setName(DEVICE_NAME);
+  pAdvertising->setAdvertisementData(advData);
 
   // Scan response: hint about the trusted MAC
   BLEAdvertisementData scanRsp;

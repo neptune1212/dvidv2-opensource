@@ -202,6 +202,10 @@ void loop() {
     else showChallengeName();
   }
   if (!flagDelivered) {
+    if (!pBLEScan->isScanning()) {
+      delay(500);
+      pBLEScan->start(5, false);
+    }
     delay(100);
   } else {
     delay(5000);

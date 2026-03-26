@@ -22,8 +22,9 @@ Once the ESP32 detects your beacon, it connects to your device and writes the fl
 sudo bluetoothctl
 [bluetooth]# power on
 [bluetooth]# discoverable on
-[bluetooth]# set-alias PwnMe_Beacon
+[bluetooth]# system-alias PwnMe_Beacon
 [bluetooth]# advertise on
+[bluetooth]# advertise.name on
 ```
 
 ---

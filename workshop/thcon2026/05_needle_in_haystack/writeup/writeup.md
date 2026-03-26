@@ -39,7 +39,7 @@ async def main():
 
     print(f"[+] Found device: {device.address}")
     async with BleakClient(device.address) as client:
-        print(f"[*] Connected. Enumerating {len(client.services)} services...")
+        print(f"[*] Connected. Enumerating {len(list(client.services))} services...")
 
         for service in client.services:
             print(f"\n[*] Service: {service.uuid}")

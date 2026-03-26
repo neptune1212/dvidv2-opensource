@@ -61,12 +61,6 @@ Decode:
 echo "574f4353417b626c655f6164765f6c65616b735f646174617d" | xxd -r -p
 ```
 
-Or using Python:
-```python
-data = bytes.fromhex("574f4353417b626c655f6164765f6c65616b735f646174617d")
-print(data.decode())
-```
-
 Output:
 ```
 WOCSA{ble_adv_leaks_data}

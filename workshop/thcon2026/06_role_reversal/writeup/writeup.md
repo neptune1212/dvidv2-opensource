@@ -16,69 +16,7 @@ Once the ESP32 detects your beacon, it connects to your device and writes the fl
 
 ## 📡 Step 2: Broadcast as PwnMe_Beacon
 
-### Option A — Python (recommended)
-
-Use `bleak` to create a simple BLE peripheral:
-
-```python
-import asyncio
-from bleak import BleakScanner
-from bleak.backends.device import BLEDevice
-
-# Note: BLE advertising from Python requires bless (not bleak)
-# pip install bless
-from bless import BlessServer, BlessGATTCharacteristic, GATTCharacteristicProperties, GATTAttributePermissions
-
-FLAG_CHAR_UUID = "deadbeef-0000-1000-8000-00805f9b34fb"
-SERVICE_UUID   = "deadbeef-0001-1000-8000-00805f9b34fb"
-
-async def main():
-    server = BlessServer(name="PwnMe_Beacon")
-
-    # Add a WRITE characteristic for the ESP32 to write the flag to
-    await server.add_new_service(SERVICE_UUID)
-    char_flags = (
-        GATTCharacteristicProperties.write |
-        GATTCharacteristicProperties.read
-    )
-    permissions = (
-        GATTAttributePermissions.readable |
-        GATTAttributePermissions.writeable
-    )
-    await server.add_new_characteristic(
-        SERVICE_UUID, FLAG_CHAR_UUID, char_flags, None, permissions
-    )
-
-    await server.start()
-    print("[*] Broadcasting as PwnMe_Beacon...")
-    print("[*] Waiting for ESP32 to connect and deliver the flag...")
-
-    # Wait for a write event
-    trigger = asyncio.Event()
-
-    def read_request(characteristic: BlessGATTCharacteristic, **kwargs):
-        return characteristic.value
-
-    def write_request(characteristic: BlessGATTCharacteristic, value, **kwargs):
-        characteristic.value = value
-        print(f"\n[!!!] FLAG RECEIVED: {value.decode()}")
-        trigger.set()
-
-    server.read_request_func = read_request
-    server.write_request_func = write_request
-
-    await trigger.wait()
-    await server.stop()
-
-asyncio.run(main())
-```
-
-```bash
-pip install bless
-python3 beacon.py
-```
-
-### Option B — Linux CLI (bluetoothctl)
+### Linux CLI (bluetoothctl)
 
 ```bash
 sudo bluetoothctl
@@ -98,12 +36,9 @@ Once `PwnMe_Beacon` is visible, the ESP32 will:
 3. Write the flag to the characteristic (UUID `deadbeef-0000-1000-8000-00805f9b34fb`)
 4. Print the flag to its Serial output
 
-Your Python script will output:
+The ESP32 will print the flag to its Serial output:
 ```
-[*] Broadcasting as PwnMe_Beacon...
-[*] Waiting for ESP32 to connect and deliver the flag...
-
-[!!!] FLAG RECEIVED: WOCSA{you_are_the_peripheral_now}
+[!!!] FLAG DELIVERED: WOCSA{you_are_the_peripheral_now}
 ```
 
 ---

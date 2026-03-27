@@ -8,7 +8,7 @@
  *
  * Participants must brute-force the 4-digit PIN (0000-9999).
  *
- * Flag: WOCSA{pin_1234_is_not_a_password}
+ * Flag: WOCSA{pin_0042_is_not_a_password}
  */
 
 #include <Wire.h>
@@ -91,11 +91,11 @@ void showLogo() {
 }
 
 #define DEVICE_NAME  "THCON26_BLE_07"
-#define FLAG         "WOCSA{pin_1234_is_not_a_password}"
+#define FLAG         "WOCSA{pin_0042_is_not_a_password}"
 #define PAIRING_MSG  "Pairing Required"
 
 // PIN code (4 digits)
-#define PIN_CODE 1234
+#define PIN_CODE 42
 
 #define SERVICE_UUID   "b1eb1eb1-0000-1000-8000-00805f9b34fb"
 #define FLAG_CHAR_UUID "b1eb1eb1-0001-1000-8000-00805f9b34fb"

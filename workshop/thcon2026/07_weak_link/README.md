@@ -22,9 +22,8 @@ BLE supports several security modes. **Legacy pairing** with a numeric PIN (pass
 
 ## Tools
 
-* **Python + bleak** — scripted pairing attempts
+* **Python + bleak** — scripted pairing attempts and flag retrieval
 * **bluetoothctl** — manual pairing to understand the flow
-* **expect** — automate interactive pairing prompts
 
 ## Useful Commands
 

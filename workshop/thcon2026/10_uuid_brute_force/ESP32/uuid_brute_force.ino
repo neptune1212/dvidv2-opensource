@@ -195,6 +195,7 @@ void setup() {
   pAdv->setScanResponse(true);
 
   BLEAdvertisementData scanRespData;
+  scanRespData.setName(DEVICE_NAME);  // restore name (overriding scan resp drops it)
   String mfData;
   mfData += (char)0xFF;  // company ID low byte (0xFFFF = test)
   mfData += (char)0xFF;  // company ID high byte

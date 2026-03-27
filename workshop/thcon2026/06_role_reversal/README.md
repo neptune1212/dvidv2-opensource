@@ -22,27 +22,12 @@ BLE devices are not always peripherals. A **Central** device scans and initiates
 
 ## Tools
 
-* **bluetoothctl** (Linux) — broadcast a custom advertisement
-* **Python + bleak** — advertise as a peripheral
-* **hciconfig + hcitool** — low-level advertisement broadcasting
+* **Python + bless** — advertise as a BLE peripheral and expose a writable GATT characteristic
 
-## Useful Commands
+## Solve
 
-### Broadcast as PwnMe_Beacon using bluetoothctl
 ```bash
-bluetoothctl
-[bluetooth]# advertise on
-[bluetooth]# set-alias PwnMe_Beacon
-[bluetooth]# discoverable on
-```
-
-### Broadcast using hciconfig + hcitool
-```bash
-# Set device name
-sudo hciconfig hci0 name PwnMe_Beacon
-
-# Start LE advertising
-sudo hcitool -i hci0 cmd 0x08 0x0008 \
-  1e 02 01 06 11 09 50 77 6e 4d 65 5f 42 65 61 63 6f 6e 00 00 00 00 00 00 00 00 00 00 00 00 00
-sudo hcitool -i hci0 cmd 0x08 0x000a 01
+pip install bless
+sudo python3 writeup/solve.py            # uses hci0 by default
+sudo python3 writeup/solve.py -i hci1   # pick a different adapter
 ```

@@ -6,45 +6,55 @@
 
 ---
 
-## 🔍 Step 1: Understand the Setup
+## Step 1: Understand the Setup
 
-Unlike previous challenges, **you don't scan for the ESP32 here**. The ESP32 is the Central — it's scanning for you. Your job is to broadcast a BLE advertisement with the name `PwnMe_Beacon`.
+Unlike previous challenges, **you don't scan for the ESP32 here**. The ESP32 is the Central — it's scanning for you. Your job is to:
 
-Once the ESP32 detects your beacon, it connects to your device and writes the flag to a characteristic, or prints it over Serial.
+1. Broadcast a BLE advertisement with the name `PwnMe_Beacon`
+2. Expose a writable GATT characteristic at UUID `deadbeef-0000-1000-8000-00805f9b34fb`
+
+Once the ESP32 detects your beacon it connects, writes the flag to that characteristic, and also prints it over Serial.
 
 ---
 
-## 📡 Step 2: Broadcast as PwnMe_Beacon
-
-### Linux CLI (bluetoothctl)
+## Step 2: Install the dependency
 
 ```bash
-sudo bluetoothctl
-[bluetooth]# power on
-[bluetooth]# discoverable on
-[bluetooth]# system-alias PwnMe_Beacon
-[bluetooth]# advertise on
-[bluetooth]# advertise.name on
+pip install bless
 ```
+
+`bless` is the Python BLE GATT server library. It wraps BlueZ D-Bus APIs on Linux to let your host act as a BLE peripheral.
 
 ---
 
-## 📋 Step 3: Wait for the ESP32 to Connect
+## Step 3: Run the solve script
 
-Once `PwnMe_Beacon` is visible, the ESP32 will:
-1. Stop scanning
-2. Connect to your device
-3. Write the flag to the characteristic (UUID `deadbeef-0000-1000-8000-00805f9b34fb`)
-4. Print the flag to its Serial output
+```bash
+sudo python3 writeup/solve.py            # uses hci0 by default
+sudo python3 writeup/solve.py -i hci1   # pick a different adapter
+```
 
-The ESP32 will print the flag to its Serial output:
+The script:
+- Creates a `BlessServer` advertising as `PwnMe_Beacon`
+- Registers a service (`12345678-…`) with a **writable** characteristic at `deadbeef-0000-1000-8000-00805f9b34fb`
+- Blocks until the ESP32 connects and writes the flag, then prints it
+
+Expected output:
+
 ```
-[!!!] FLAG DELIVERED: WOCSA{you_are_the_peripheral_now}
+[*] Advertising as 'PwnMe_Beacon'
+[*] Characteristic UUID : deadbeef-0000-1000-8000-00805f9b34fb
+[*] Waiting for ESP32 to connect and deliver the flag...
+
+[!!!] FLAG RECEIVED: WOCSA{you_are_the_peripheral_now}
+[*] Done.
 ```
+
+> `sudo` is required because BlueZ GATT server operations need elevated privileges on Linux.
 
 ---
 
-## 🎯 Flag
+## Flag
 
 ```
 WOCSA{you_are_the_peripheral_now}
@@ -54,7 +64,7 @@ WOCSA{you_are_the_peripheral_now}
 
 ## Key Takeaways
 
-* BLE devices can act as either **Central** (scanner/initiator) or **Peripheral** (advertiser/responder)
-* Any host with a BLE adapter can broadcast arbitrary advertisement data — name, UUIDs, manufacturer data
-* "Spoofing" a beacon is trivial: just broadcast the expected name or UUID
-* This technique is used in real attacks against devices that trigger actions upon detecting specific beacons (proximity unlocking, automation systems, etc.)
+* BLE devices can act as either **Central** (scanner/initiator) or **Peripheral** (advertiser/responder) — your computer can do both.
+* Any host with a BLE adapter can broadcast arbitrary advertisement data and host a GATT server.
+* "Spoofing" a beacon is trivial: just advertise the expected name and expose the expected characteristic UUID.
+* This technique is used in real attacks against devices that trigger actions upon detecting specific beacons (proximity unlocking, automation systems, etc.).

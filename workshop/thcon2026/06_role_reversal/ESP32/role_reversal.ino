@@ -101,6 +101,8 @@ void showLogo() {
 
 BLEScan* pBLEScan = nullptr;
 bool flagDelivered = false;
+bool targetFound   = false;
+BLEAdvertisedDevice* pTargetDevice = nullptr;
 
 class AdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
   void onResult(BLEAdvertisedDevice advertisedDevice) {
@@ -108,55 +110,59 @@ class AdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
     Serial.println(advertisedDevice.getName().c_str());
 
     if (advertisedDevice.getName() == TARGET_NAME) {
-      Serial.println("[+] PwnMe_Beacon found! Stopping scan and connecting...");
+      Serial.println("[+] PwnMe_Beacon found! Will connect from loop...");
+      pTargetDevice = new BLEAdvertisedDevice(advertisedDevice);
+      targetFound = true;
       pBLEScan->stop();
-
-      BLEClient* pClient = BLEDevice::createClient();
-      if (pClient->connect(&advertisedDevice)) {
-        Serial.println("[+] Connected to PwnMe_Beacon!");
-
-        // Try to write the flag to the known characteristic
-        BLERemoteService* pSvc = nullptr;
-        BLERemoteCharacteristic* pChar = nullptr;
-
-        // Iterate services to find our target characteristic
-        std::map<std::string, BLERemoteService*>* services = pClient->getServices();
-        for (auto& svcPair : *services) {
-          BLERemoteService* svc = svcPair.second;
-          std::map<std::string, BLERemoteCharacteristic*>* chars = svc->getCharacteristics();
-          for (auto& charPair : *chars) {
-            if (charPair.first == FLAG_CHAR_UUID) {
-              pChar = charPair.second;
-              break;
-            }
-          }
-          if (pChar) break;
-        }
-
-        if (pChar && pChar->canWrite()) {
-          pChar->writeValue(FLAG, strlen(FLAG));
-          Serial.println("[+] Flag written to participant device characteristic!");
-        } else {
-          Serial.println("[!] Target characteristic not found or not writable.");
-          Serial.println("[+] Flag delivery via Serial:");
-        }
-
-        // Always print the flag to Serial as a fallback
-        Serial.print("[FLAG] ");
-        Serial.println(FLAG);
-        flagDelivered = true;
-
-        pClient->disconnect();
-      } else {
-        Serial.println("[-] Connection failed.");
-      }
-
-      // Restart scan after attempt
-      delay(2000);
-      pBLEScan->start(5, false);
     }
   }
 };
+
+void connectAndDeliver() {
+  Serial.println("[+] Connecting to PwnMe_Beacon...");
+
+  BLEClient* pClient = BLEDevice::createClient();
+  if (pClient->connect(pTargetDevice)) {
+    Serial.println("[+] Connected to PwnMe_Beacon!");
+
+    BLERemoteCharacteristic* pChar = nullptr;
+
+    // Iterate services to find our target characteristic
+    std::map<std::string, BLERemoteService*>* services = pClient->getServices();
+    for (auto& svcPair : *services) {
+      BLERemoteService* svc = svcPair.second;
+      std::map<std::string, BLERemoteCharacteristic*>* chars = svc->getCharacteristics();
+      for (auto& charPair : *chars) {
+        if (charPair.first == FLAG_CHAR_UUID) {
+          pChar = charPair.second;
+          break;
+        }
+      }
+      if (pChar) break;
+    }
+
+    if (pChar && pChar->canWrite()) {
+      pChar->writeValue(FLAG, strlen(FLAG));
+      Serial.println("[+] Flag written to participant device characteristic!");
+    } else {
+      Serial.println("[!] Target characteristic not found or not writable.");
+      Serial.println("[+] Flag delivery via Serial:");
+    }
+
+    // Always print the flag to Serial as a fallback
+    Serial.print("[FLAG] ");
+    Serial.println(FLAG);
+    flagDelivered = true;
+
+    pClient->disconnect();
+  } else {
+    Serial.println("[-] Connection failed.");
+  }
+
+  delete pTargetDevice;
+  pTargetDevice = nullptr;
+  targetFound = false;
+}
 
 void showChallengeName() {
   display.clearDisplay();
@@ -201,6 +207,14 @@ void loop() {
     if (showingLogo) showLogo();
     else showChallengeName();
   }
+
+  if (targetFound) {
+    connectAndDeliver();
+    delay(2000);
+    pBLEScan->start(5, false);
+    return;
+  }
+
   if (!flagDelivered) {
     if (!pBLEScan->isScanning()) {
       delay(500);

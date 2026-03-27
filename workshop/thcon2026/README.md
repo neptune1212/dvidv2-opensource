@@ -16,7 +16,7 @@ This workshop is in collaboration with:
 
 ## Introduction
 
-This workshop introduces the security concepts of **Bluetooth Low Energy (BLE)** through 9 hands-on challenges. Each challenge is served by an ESP32 microcontroller running a custom firmware. You will progressively move from basic BLE reconnaissance to advanced exploitation techniques.
+This workshop introduces the security concepts of **Bluetooth Low Energy (BLE)** through 10 hands-on challenges. Each challenge is served by an ESP32 microcontroller running a custom firmware. You will progressively move from basic BLE reconnaissance to advanced exploitation techniques.
 
 ### Required Tools
 
@@ -49,6 +49,7 @@ This workshop introduces the security concepts of **Bluetooth Low Energy (BLE)**
 | 07 | [Weak Link](./07_weak_link/) | Advanced | ⭐⭐⭐⭐ | BLE PIN brute-force |
 | 08 | [Replay Attack](./08_replay_attack/) | Advanced | ⭐⭐⭐⭐ | PCAP analysis & traffic replay |
 | 09 | [Buffer Overflow](./09_buffer_overflow/) | Advanced | ⭐⭐⭐⭐⭐ | Fuzzing & input validation bypass |
+| 10 | [Ghost in the GATT](./10_uuid_brute_force/) | Advanced | ⭐⭐⭐⭐⭐ | UUID brute-force & direct ATT reads |
 
 ---
 

@@ -65,7 +65,7 @@ Write payloads of increasing size to find the threshold:
 import asyncio
 from bleak import BleakClient
 
-MAC = "AA:BB:CC:DD:EE:FF"
+MAC = input("Enter target MAC address: ")
 INPUT_UUID  = "30766572-666c-3077-0001-00805f9b34fb"
 OUTPUT_UUID = "30766572-666c-3077-0002-00805f9b34fb"
 

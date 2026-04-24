@@ -143,8 +143,7 @@ Weak PIN-based pairing is intentionally demonstrated in one of the advanced exer
 | **gatttool** | Read and write GATT values from CLI | `apt install bluez` |
 | **Python 3 + bleak** | Automate scanning, reading, writing, and brute-force tasks | `pip install bleak` |
 | **Wireshark** | Inspect captured BLE traffic for replay analysis | https://www.wireshark.org |
-| **hciconfig / hcitool** | Adapter management and discovery helpers | `apt install bluez` |
-| **bdaddr** | Optional MAC spoofing helper used on some Linux setups | install separately if needed |
+| **hciconfig / hcitool** | Adapter management, discovery helpers, and some MAC-change workflows | `apt install bluez` |
 | **bless** | Emulate a BLE peripheral from Python | `pip install bless` |
 
 ## Required Hardware

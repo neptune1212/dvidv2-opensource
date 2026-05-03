@@ -91,7 +91,7 @@ void showChallengeName() {
   display.println(F("THCON 2026"));
   display.println(F("Challenge 04"));
   display.println();
-    display.println(F("Identity Theft"));;
+  display.println(F("Identity Theft"));
   display.display();
 }
 void setup() {

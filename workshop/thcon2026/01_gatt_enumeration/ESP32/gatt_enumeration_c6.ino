@@ -44,6 +44,12 @@ bool displayOk = false;
 unsigned long lastSwitch = 0;
 bool showingLogo = false;
 
+void showLogo() {
+  display.clearDisplay();
+  display.drawBitmap(0, 0, epd_bitmap_wocsa_logo, 128, 64, SSD1306_WHITE);
+  display.display();
+}
+
 void showChallengeName() {
   display.clearDisplay();
   display.setTextSize(1);
@@ -53,12 +59,6 @@ void showChallengeName() {
   display.println(F("Challenge 01"));
   display.println();
   display.println(F("GATT Enumeration"));
-  display.display();
-}
-
-void showLogo() {
-  display.clearDisplay();
-  display.drawBitmap(0, 0, epd_bitmap_wocsa_logo, 128, 64, SSD1306_WHITE);
   display.display();
 }
 

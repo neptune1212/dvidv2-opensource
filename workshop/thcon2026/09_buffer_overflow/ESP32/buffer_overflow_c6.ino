@@ -108,7 +108,7 @@ void showChallengeName() {
   display.println(F("THCON 2026"));
   display.println(F("Challenge 09"));
   display.println();
-    display.println(F("Buffer Overflow"));;
+  display.println(F("Buffer Overflow"));
   display.display();
 }
 void setup() {

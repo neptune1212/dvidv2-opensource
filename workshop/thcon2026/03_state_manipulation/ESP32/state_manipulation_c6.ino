@@ -97,7 +97,7 @@ void showChallengeName() {
   display.println(F("THCON 2026"));
   display.println(F("Challenge 03"));
   display.println();
-    display.println(F("State Manipulation"));;
+  display.println(F("State Manipulation"));
   display.display();
 }
 void setup() {

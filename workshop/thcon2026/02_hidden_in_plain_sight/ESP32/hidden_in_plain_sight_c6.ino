@@ -59,8 +59,8 @@ void showChallengeName() {
   display.println(F("THCON 2026"));
   display.println(F("Challenge 02"));
   display.println();
-    display.println(F("Hidden in Plain"));
-    display.println(F("Sight"));;
+  display.println(F("Hidden in Plain"));
+  display.println(F("Sight"));
   display.display();
 }
 void setup() {

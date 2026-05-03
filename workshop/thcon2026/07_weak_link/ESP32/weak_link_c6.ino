@@ -104,7 +104,7 @@ void showChallengeName() {
   display.println(F("THCON 2026"));
   display.println(F("Challenge 07"));
   display.println();
-    display.println(F("Weak Link"));;
+  display.println(F("Weak Link"));
   display.display();
 }
 void setup() {

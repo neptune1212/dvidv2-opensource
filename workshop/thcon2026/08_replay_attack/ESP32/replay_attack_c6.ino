@@ -104,7 +104,7 @@ void showChallengeName() {
   display.println(F("THCON 2026"));
   display.println(F("Challenge 08"));
   display.println();
-    display.println(F("Replay Attack"));;
+  display.println(F("Replay Attack"));
   display.display();
 }
 void setup() {

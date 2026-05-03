@@ -100,8 +100,8 @@ void showChallengeName() {
   display.println(F("THCON 2026"));
   display.println(F("Challenge 05"));
   display.println();
-    display.println(F("Needle in a"));
-    display.println(F("Haystack"));;
+  display.println(F("Needle in a"));
+  display.println(F("Haystack"));
   display.display();
 }
 void setup() {

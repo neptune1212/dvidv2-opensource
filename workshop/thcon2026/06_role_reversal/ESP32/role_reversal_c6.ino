@@ -122,7 +122,7 @@ void showChallengeName() {
   display.println(F("THCON 2026"));
   display.println(F("Challenge 06"));
   display.println();
-    display.println(F("Role Reversal"));;
+  display.println(F("Role Reversal"));
   display.display();
 }
 void setup() {

@@ -25,8 +25,8 @@
 #define SCREEN_HEIGHT  64
 #define OLED_RESET     -1
 #define SCREEN_ADDRESS 0x3C
-#define I2C_SDA        15
-#define I2C_SCL        4
+#define I2C_SDA        11
+#define I2C_SCL        10
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
@@ -94,14 +94,15 @@ void showChallengeName() {
     display.println(F("Identity Theft"));;
   display.display();
 }
-
 void setup() {
   Serial.begin(115200);
   Serial.println("[*] Challenge 04 - Identity Theft");
   Serial.print("[*] Trusted MAC: ");
   Serial.println(TRUSTED_MAC);
 
-  Wire.begin(I2C_SDA, I2C_SCL);
+  Wire.setPins(I2C_SDA, I2C_SCL);
+  Wire.begin();
+  delay(100);
   if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
   } else {
